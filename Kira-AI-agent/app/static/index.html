@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#111827"/><title>Кирюша — AI-офис</title><link rel="stylesheet" href="/assets/style.css" defer></head>
+<body><main class="shell">
+<header><div class="brand"><div class="mark">К</div><div><b>Кирюша</b><small>Мой AI-офис</small></div></div><span class="pill" id="connection">Подключение…</span></header>
+<section class="intro"><div class="eyebrow">КОМАНДА AI-АГЕНТОВ</div><h1>Чем займёмся сегодня?</h1><p>Шесть специалистов и один координатор — все задачи в одном месте.</p></section>
+<section class="agents" id="agents" aria-label="Агенты"></section>
+<section class="work"><div class="workhead"><div><small>АКТИВНЫЙ АГЕНТ</small><h2 id="agent-title">Кирюша</h2></div><span class="dot"></span></div>
+<div id="messages" class="messages" role="log" aria-live="polite"><div class="bubble agentbubble">Привет! Выбери специалиста или напиши задачу. Я помогу её организовать.</div></div>
+<form id="chat-form"><input id="chat-input" autocomplete="off" aria-label="Сообщение" maxlength="12000" placeholder="Напиши поручение…" required/><button type="submit" id="send" aria-label="Отправить">➤</button></form>
+</section>
+<section class="records"><div class="sectionhead"><h2>Задачи и идеи</h2><button id="refresh" type="button">Обновить ↻</button></div><div id="record-list"><p class="muted">Загрузка…</p></div></section>
+<footer>MAX Mini App · Кирюша AI Office · MVP</footer></main><script src="/assets/app.js" defer></script></body></html>
