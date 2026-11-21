@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "tenant_id": "utimoshi",
+  "platform": "vk",
+  "community_id": 239119350,
+  "community_url": "https://vk.ru/club239119350",
+  "source": "owner_provided",
+  "verification_status": "owner_provided_unverified_by_api",
+  "integration_status": "not_connected",
+  "permissions": "none",
+  "mode": "read_only_planned",
+  "notes": "VK public page retrieval failed on 2026-11-21. Do not infer subscriber counts or posts. No credentials in this file."
+}
