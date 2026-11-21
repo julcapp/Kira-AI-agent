@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_model: str = ""
     default_timezone: str = "Europe/Moscow"
+    prompt_auto_upgrade_enabled: bool = True
     scheduler_enabled: bool = True
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
