@@ -164,7 +164,13 @@ async def handle_message(db: Session, owner: str, message: str) -> str:
         specialist = AGENTS[agent_key]
         name, instruction = specialist.name, specialist.system
     try:
-        result = await answer(name, instruction, message)
+        from ..skills.prompt_upgrader import prepare_for_agent, agent_task_message
+        if settings.prompt_auto_upgrade_enabled:
+            suggestion = await prepare_for_agent(message, name)
+            agent_message = agent_task_message(message, suggestion)
+        else:
+            agent_message = message
+        result = await answer(name, instruction, agent_message)
     except Exception:
         result = "AI-провайдер сейчас недоступен. Попробуй ещё раз. Команды /idea, /task и /list работают автономно."
     write_log(db, owner, agent_key, "chat", message[:500])
