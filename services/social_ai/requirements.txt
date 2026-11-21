@@ -1,0 +1,2 @@
+# Kept separate from the running Kiryusha MVP until review and integration.
+mcp>=1.0,<2.0
