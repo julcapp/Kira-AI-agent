@@ -73,6 +73,12 @@ async def handle_message(db: Session, owner: str, message: str) -> str:
     if not message:
         return HELP
     lower = message.lower()
+    if lower == "/upgrade" or lower.startswith("/upgrade "):
+        from ..skills.prompt_upgrader import improve_prompt
+        result = await improve_prompt(message[len("/upgrade"):])
+        write_log(db, owner, "prompt_upgrader", "improve", "Prompt optimization requested")
+        db.commit()
+        return result
     if lower in ("/start", "/help"):
         return HELP
     if lower.startswith("/voice"):
