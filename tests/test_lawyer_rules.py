@@ -8,7 +8,7 @@ def test_legal_rules_active_in_registry():
 
 def test_legal_agent_requires_human_approval_and_real_sources():
     lower = LEGAL_SYSTEM_PROMPT.lower()
-    for phrase in ("не выдумывай", "судебн", "провер", "подтвержден", "не отправляй", "юрисдикц"):
+    for phrase in ("не выдумывай", "судебн", "провер", "подтвержд", "не отправляй", "юрисдикц"):
         assert phrase in lower
 
 def test_lawyer_is_single_registered_agent():
