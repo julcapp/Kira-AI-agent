@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ваш Финэксперт — прототип документов</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#202a39;background:#f3f5f8}
+*{box-sizing:border-box}body{margin:0}main{max-width:920px;margin:auto;padding:24px}
+h1{font-size:30px;margin-bottom:6px}h2{font-size:21px}p{line-height:1.5}
+.note{background:#fef5da;border-left:4px solid #ca9134;padding:12px 14px;border-radius:7px}
+.panel{background:#fff;padding:22px;margin-top:18px;border:1px solid #e0e4ea;border-radius:14px;box-shadow:0 3px 8px #00000008}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.tile{background:#f5f7fb;padding:15px;border-radius:9px}small,.sub{color:#596577}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}.tabs button,select{background:#f2f4f9;color:#202a39;border:1px solid #d5dbe6;padding:10px 14px;border-radius:9px;cursor:pointer;font:inherit}
+.tabs button.active{background:#243a60;color:white}
+table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #e8ebf1;text-align:left;padding:12px 8px;font-size:14px}
+label{display:block;margin:10px 0}.btn{color:white;background:#243a60;border:none;border-radius:9px;padding:12px 18px;font-weight:600;cursor:pointer}
+pre{white-space:pre-wrap;background:#f5f7fb;padding:12px;border-radius:8px}
+</style></head><body><main>
+<header><small>ПРОТОТИП · НЕ ПОДКЛЮЧЕН К СЕРВИСУ</small><h1>Ваш Финэксперт</h1><p class="sub">Мои документы · учебные примеры без персональных данных</p></header>
+<div class="note"><b>Только демонстрация.</b> Этот экран не загружает и не хранит файлы. Не вводите реальные реквизиты и бухгалтерские сведения.</div>
+<section class="panel"><h2>Финансовый паспорт</h2><div class="grid"><div class="tile"><small>Организация</small><p><b>Демо-предприятие № 001</b></p></div><div class="tile"><small>Статус</small><p><b>Учебный контур</b></p></div><div class="tile"><small>Период</small><p><b>2026</b></p></div></div></section>
+<section class="panel"><h2>Мои документы</h2><p class="sub">Оригиналы хранятся отдельно от очищенных версий. Внешнему ИИ передаются только прошедшие проверку очищенные копии.</p><div class="tabs" id="tabs"><button class="active" data-kind="original">Оригиналы</button><button data-kind="sanitized">Обезличенные копии</button><button data-kind="result">Результаты анализа</button></div>
+<div style="overflow-x:auto"><table><thead><tr><th>Номер</th><th>Документ</th><th>Связан с</th><th>Статус</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section class="panel"><h2>Что хотите проверить?</h2>
+<label><input type="radio" name="check" value="general" checked> Общее состояние бухгалтерского учёта</label>
+<label><input type="radio" name="check" value="debt"> Дебиторскую и кредиторскую задолженность</label>
+<label><input type="radio" name="check" value="profit"> Финансовые результаты</label>
+<label><input type="radio" name="check" value="errors"> Поиск ошибок и расхождений</label>
+<label><input type="radio" name="check" value="all"> <b>Комплексная проверка — всё перечисленное выше</b></label>
+<p><label for="system">Конфигурация 1С</label><select id="system"><option>1С:Бухгалтерия предприятия</option><option>1С:ERP</option><option>1С:Комплексная автоматизация</option><option>Другая конфигурация</option></select></p>
+<button class="btn" id="show">Показать необходимые отчёты</button>
+<pre id="guide" aria-live="polite">Сначала потребуется общая оборотно-сальдовая ведомость по бухгалтерскому учёту (ОСВ) в формате XLSX. Выберите задачу и нажмите кнопку.</pre>
+<p class="sub">Никакой автоматической отправки отчётов внешним ИИ. Реальная загрузка станет доступна только после настройки полномочий, безопасного хранилища и проверки анонимайзера.</p></section>
+</main><script>
+"use strict";
+const examples=[
+{kind:"original",id:"DOC-2026-000124",name:"ОСВ · демо",parent:"—",status:"Защищённый оригинал"},
+{kind:"sanitized",id:"DOC-2026-000124-A01",name:"ОСВ · очищенная копия",parent:"DOC-2026-000124",status:"Пример очищенной версии"},
+{kind:"result",id:"DOC-2026-000124-R01",name:"Диагностика · демо",parent:"DOC-2026-000124-A01",status:"Учебный анализ"}];
+function render(kind){const body=document.getElementById("rows");body.replaceChildren();for(const d of examples.filter(x=>x.kind===kind)){const tr=document.createElement("tr");for(const v of [d.id,d.name,d.parent,d.status]){const td=document.createElement("td");td.textContent=v;tr.append(td)}body.append(tr)}}
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");render(b.dataset.kind)}));render("original");
+document.getElementById("show").addEventListener("click",()=>{
+const choice=document.querySelector("input[name=check]:checked").value;
+const task={general:"Для общей проверки: общая ОСВ; по задаче бухгалтерский баланс и отчёт о финансовых результатах.",debt:"Для задолженности: общая ОСВ, ОСВ по счетам 60, 62 и 76 с аналитикой контрагентов и договоров.",profit:"Для финансовых результатов: общая ОСВ, отчёт о финансовых результатах; по запросу анализ счетов 90, 91 и 99.",errors:"Для поиска ошибок: общая ОСВ; затем адресно карточки счетов и проводки, если система обнаружит отклонения.",all:"Комплексная проверка: сначала общая ОСВ, затем баланс и отчёт о финансовых результатах, ОСВ счетов 60/62/76, анализ 90/91/99 и только при необходимости карточки счетов. Не все файлы сразу."};
+document.getElementById("guide").textContent="Конфигурация: "+document.getElementById("system").value+"\n"+task[choice]+"\n\nДля чего: проверка остатков, оборотов, задолженности и возможных расхождений. Выгрузите отчёты из бухгалтерского (регламентированного) учёта в XLSX. Не загружайте полную базу 1С.";
+});
+</script></body></html>
