@@ -5,6 +5,7 @@ from sqlalchemy import select, or_
 from .db import SessionLocal, Record
 from .config import settings
 from .integrations.max_api import send_max_message
+from .workflows.service import work_once, deliver_once
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +35,8 @@ async def scheduler_loop():
     while True:
         try:
             await check_reminders()
+            await work_once()
+            await deliver_once()
         except Exception:
             log.exception("Reminder scheduler error")
         await asyncio.sleep(15)
