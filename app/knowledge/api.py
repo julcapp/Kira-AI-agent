@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from ..db import SessionLocal
 from ..miniapp_auth import validate_init_data
 from ..skills.registry import SkillSpec, SkillStatus
-from ..brands.passport import BrandPassport, Sensitivity
+from ..brands.passport import BrandPassport, BrandFact, Sensitivity
 from .models import TenantMembership, SkillVersion, AgentSkillGrant, BrandRevision, KnowledgeAudit
 
 from fastapi import Header
@@ -46,7 +46,7 @@ class CreateBrand(BaseModel):
     brand_id: str = Field(pattern=r"^[a-zA-Z0-9_.-]{2,100}$")
     revision: int = Field(ge=1)
     title: str = Field(min_length=1, max_length=200)
-    facts: list = Field(default_factory=list)
+    facts: list[BrandFact] = Field(default_factory=list)
 
 
 class GrantSkill(BaseModel):
