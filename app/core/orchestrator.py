@@ -11,7 +11,7 @@ from ..llm import answer
 HELP = (
     "Я Кирюша. Команды:\n"
     "/agents — список специалистов\n"
-    "/agent lawyer|vk|developer|competitors|sales|tutor — выбрать специалиста\n"
+    "/agent lawyer|vk|developer|competitors|sales|tutor|article_author — выбрать специалиста\n"
     "/agent kiryusha — вернуться к координатору\n"
     "/idea текст — сохранить идею\n"
     "/task текст — создать задачу\n"
@@ -59,6 +59,7 @@ def normalize_spoken_command(message: str) -> str:
         ("продавец", "sales"), ("продавца", "sales"),
         ("репетитор", "tutor"), ("репетитора", "tutor"),
         ("смм", "vk"), ("эсэмэм", "vk"),
+        ("автор статей", "article_author"), ("копирайтер", "article_author"),
         ("кирюша", "kiryusha"),
     ):
         if lower in (f"переключи на {name}", f"позови {name}", f"включи {name}"):
