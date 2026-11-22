@@ -53,4 +53,7 @@ engine = make_engine()
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
 def init_db():
-    Base.metadata.create_all(engine)
+    # Legacy MVP tables: knowledge_* tables are managed exclusively by Alembic.
+    Base.metadata.create_all(engine, tables=[Record.__table__, InboxEvent.__table__,
+                                            Conversation.__table__, VoicePreference.__table__,
+                                            AuditLog.__table__])
