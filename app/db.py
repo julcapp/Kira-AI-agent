@@ -47,7 +47,12 @@ def make_engine():
         from pathlib import Path
         filename = settings.database_url.removeprefix("sqlite:///")
         Path(filename).parent.mkdir(parents=True, exist_ok=True)
-    return create_engine(settings.database_url, connect_args={"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}, pool_pre_ping=True)
+    options = {"connect_args": {"check_same_thread": False}} if settings.database_url.startswith("sqlite") else {}
+    if settings.database_url == "sqlite://":
+        # In-memory SQLite must share one connection across FastAPI thread-pool workers.
+        from sqlalchemy.pool import StaticPool
+        options["poolclass"] = StaticPool
+    return create_engine(settings.database_url, pool_pre_ping=True, **options)
 
 engine = make_engine()
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
