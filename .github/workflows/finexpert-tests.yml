@@ -7,11 +7,13 @@ on:
       - "app/max_menu.py"
       - "app/agent_catalog.py"
       - "app/agents/legal_rules.py"
+      - "app/agents/specialist_rules.py"
       - "app/agents/registry.py"
       - "tests/test_finexpert_*.py"
       - "tests/test_max_menu.py"
       - "tests/test_agent_catalog.py"
       - "tests/test_lawyer_rules.py"
+      - "tests/test_specialist_rules.py"
       - "requirements.txt"
       - ".github/workflows/finexpert-tests.yml"
   push:
@@ -22,11 +24,13 @@ on:
       - "app/max_menu.py"
       - "app/agent_catalog.py"
       - "app/agents/legal_rules.py"
+      - "app/agents/specialist_rules.py"
       - "app/agents/registry.py"
       - "tests/test_finexpert_*.py"
       - "tests/test_max_menu.py"
       - "tests/test_agent_catalog.py"
       - "tests/test_lawyer_rules.py"
+      - "tests/test_specialist_rules.py"
       - "requirements.txt"
       - ".github/workflows/finexpert-tests.yml"
 
@@ -46,4 +50,4 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
       - name: Run synthetic vault tests
-        run: python -m pytest tests/test_finexpert_document_vault.py tests/test_finexpert_delegations.py tests/test_max_menu.py tests/test_agent_catalog.py tests/test_lawyer_rules.py -q
+        run: python -m pytest tests/test_finexpert_document_vault.py tests/test_finexpert_delegations.py tests/test_max_menu.py tests/test_agent_catalog.py tests/test_lawyer_rules.py tests/test_specialist_rules.py -q
