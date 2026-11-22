@@ -35,7 +35,7 @@ ALIASES = {
 }
 def choose_agent(message: str) -> str:
     lowered = message.lower()
-    for token, agent in ALIASES.items():
+    for token, agent in sorted(ALIASES.items(), key=lambda pair: len(pair[0]), reverse=True):
         if token in lowered:
             return agent
     return "kiryusha"
