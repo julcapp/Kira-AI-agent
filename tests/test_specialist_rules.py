@@ -1,7 +1,7 @@
 from app.agents.registry import AGENTS, choose_agent
 from app.agents.specialist_rules import (
     RULES_VERSION, ACCOUNTANT_PROMPT, REWRITER_PROMPT,
-    PROGRAMMER_PROMPT, CODE_REVIEW_PROMPT, AD_WRITER_PROMPT
+    PROGRAMMER_PROMPT, CODE_REVIEW_PROMPT, AD_WRITER_PROMPT, AD_WRITER_PROMPT_VERSION
 )
 from app.agent_catalog import Catalog, initial_entries
 
@@ -35,3 +35,8 @@ def test_cross_agent_safety_rules():
     assert "production" in PROGRAMMER_PROMPT
     assert "согласования" in CODE_REVIEW_PROMPT
     assert "подтверждения пользователя" in AD_WRITER_PROMPT
+
+def test_ad_writer_extended_rules():
+    assert AD_WRITER_PROMPT_VERSION == "1.1.0"
+    for required in ("3–5", "50–150", "Авито", "Юлы", "SEO", "визуал", "подтверждения"):
+        assert required in AD_WRITER_PROMPT
