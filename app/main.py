@@ -10,6 +10,7 @@ from .core.orchestrator import handle_message
 from .integrations.max_api import parse_incoming, send_max_message, send_max_audio
 from .integrations.tts import synthesize_mp3
 from .scheduler import scheduler_loop
+from .knowledge.api import router as knowledge_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,6 +27,7 @@ async def lifespan(app: FastAPI):
                 pass
 
 app = FastAPI(title="Кирюша AI Office", version="0.2.0", lifespan=lifespan)
+app.include_router(knowledge_router)
 
 class ChatIn(BaseModel):
     user_id: str = Field(min_length=1, max_length=100)
