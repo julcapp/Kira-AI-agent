@@ -3,9 +3,13 @@ on:
   push:
     branches:
       - feature/persistent-skills-brands-api
+      - feature/task-orchestrator-mvp
   pull_request:
     paths:
       - "app/knowledge/**"
+      - "app/workflows/**"
+      - "app/core/orchestrator.py"
+      - "app/scheduler.py"
       - "app/skills/**"
       - "app/brands/**"
       - "app/db.py"

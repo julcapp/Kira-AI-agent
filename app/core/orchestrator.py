@@ -7,6 +7,8 @@ from ..config import settings
 from ..db import Record, Conversation, AuditLog, VoicePreference
 from ..agents.registry import AGENTS, choose_agent
 from ..llm import answer
+from ..workflows.models import WorkJob
+from ..workflows.service import create_job, serialize_job
 
 HELP = (
     "Я Кирюша. Команды:\n"
@@ -39,6 +41,9 @@ def normalize_spoken_command(message: str) -> str:
         return normalized
     lower = normalized.lower()
     for phrase, command in (
+        ("поручи агентам", "/delegate"),
+        ("кира поручаю", "/delegate"),
+        ("кирюша поручаю", "/delegate"),
         ("запиши идею", "/idea"),
         ("сохрани идею", "/idea"),
         ("добавь идею", "/idea"),
@@ -105,6 +110,32 @@ async def handle_message(db: Session, owner: str, message: str) -> str:
         write_log(db, owner, target, "switch", target)
         db.commit()
         return f"Переключил на: {AGENTS[target].name if target in AGENTS else 'Кирюша'}."
+    if lower.startswith("/delegate "):
+        request = message[len("/delegate "):].strip()
+        if not (1 <= len(request) <= 5000):
+            return "Опишите поручение длиной от 1 до 5000 символов."
+        task = create_job(db, owner=owner, request=request,
+                          source="max" if owner.startswith("max:") else "local")
+        if task.status == "needs_clarification":
+            return f"Задача #{task.id}: {task.result}"
+        return f"Задача #{task.id} принята. Исполнители назначены. Статус: /job {task.id}"
+    if lower == "/jobs":
+        items = db.scalars(select(WorkJob).where(WorkJob.owner_id == owner)
+                           .order_by(WorkJob.id.desc()).limit(10)).all()
+        return ("\\n".join(f"#{item.id} {item.status}: {item.request[:90]}"
+                            for item in items) or "Делегированных задач пока нет.")
+    if lower.startswith("/job "):
+        try:
+            identifier = int(message.split()[1])
+        except (ValueError, IndexError):
+            return "Формат: /job 123"
+        item = db.get(WorkJob, identifier)
+        if item is None or item.owner_id != owner:
+            return "Задача не найдена."
+        details = serialize_job(db, item)
+        if details["status"] == "completed":
+            return f"Задача #{identifier} завершена:\\n{(details['result'] or '')[:10000]}"
+        return f"Задача #{identifier}: {details['status']}. {details['error'] or details['result'] or ''}"
     for command, kind in (("/idea ", "idea"), ("/task ", "task")):
         if lower.startswith(command):
             title = message[len(command):].strip()
