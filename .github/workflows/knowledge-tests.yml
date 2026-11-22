@@ -1,0 +1,57 @@
+name: Knowledge API tests
+on:
+  push:
+    branches:
+      - feature/persistent-skills-brands-api
+  pull_request:
+    paths:
+      - "app/knowledge/**"
+      - "app/skills/**"
+      - "app/brands/**"
+      - "app/db.py"
+      - "app/main.py"
+      - "migrations/**"
+      - "tests/**"
+      - "requirements.txt"
+      - ".github/workflows/knowledge-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: kiryusha_ci
+          POSTGRES_PASSWORD: ci_only_password
+          POSTGRES_DB: kiryusha_knowledge_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kiryusha_ci -d kiryusha_knowledge_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run test suite
+        run: python -m pytest -q
+      - name: Test fresh database migration
+        env:
+          DATABASE_URL: sqlite:////tmp/kiryusha-knowledge-ci.db
+        run: |
+          alembic upgrade head
+          alembic current
+      - name: Test PostgreSQL migration
+        env:
+          DATABASE_URL: postgresql+psycopg://kiryusha_ci:ci_only_password@127.0.0.1:5432/kiryusha_knowledge_ci
+        run: |
+          alembic upgrade head
+          alembic current
