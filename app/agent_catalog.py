@@ -10,7 +10,7 @@ from typing import Iterable
 import re
 
 KEY = re.compile(r"^[a-z][a-z0-9_]{0,39}$")
-ROUTES = {"lawyer", "accountant", "sales", "vk", "competitors", "developer", "tutor"}
+ROUTES = {"lawyer", "accountant", "sales", "vk", "competitors", "developer", "tutor", "code_review", "rewriter", "ad_writer"}
 ROOTS = (
     ("lawyer", "⚖️ Юрист", "lawyer"),
     ("finance", "💰 Ваш Финэксперт", "accountant"),
@@ -39,8 +39,8 @@ def initial_entries() -> list[CatalogEntry]:
         "finance": [("accounting","Бухгалтерский учёт","accountant"),
                     ("navigation","Персональный финансовый навигатор","accountant")],
         "manager": [("crm","Клиенты и CRM","sales"),("sales","Продажи","sales")],
-        "marketing": [("vk","VK и соцсети","vk"),("ads","Реклама","vk"),("competitors","Конкуренты","competitors")],
-        "developer": [("code","Программирование","developer"),("web","Верстка сайтов","developer")],
+        "marketing": [("vk","VK и соцсети","vk"),("ads","Реклама","vk"),("competitors","Конкуренты","competitors"),("rewrite","Рерайтер","rewriter"),("advertisements","Объявления","ad_writer")],
+        "developer": [("code","Программирование","developer"),("web","Верстка сайтов","developer"),("review","Исправление кода","code_review")],
         "education": [("courses","Обучение","tutor"),("tutor","Репетитор","tutor")],
     }
     for parent, children in submenus.items():
