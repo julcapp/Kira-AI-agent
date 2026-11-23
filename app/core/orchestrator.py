@@ -7,6 +7,7 @@ from ..config import settings
 from ..db import Record, Conversation, AuditLog, VoicePreference
 from ..agents.registry import AGENTS, choose_agent
 from ..llm import answer
+from ..skills.registry import skill_instructions_for_agent
 
 HELP = (
     "Я Кирюша. Команды:\n"
@@ -157,6 +158,9 @@ async def handle_message(db: Session, owner: str, message: str) -> str:
     else:
         specialist = AGENTS[agent_key]
         name, instruction = specialist.name, specialist.system
+        skill_context = skill_instructions_for_agent(agent_key)
+        if skill_context:
+            instruction += "\n\n" + skill_context
     try:
         result = await answer(name, instruction, message)
     except Exception:
