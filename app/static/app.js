@@ -21,3 +21,7 @@ async function refresh(){try{const data=await api("/api/mini/records");el("recor
 el("chat-form").addEventListener("submit",async e=>{e.preventDefault();const msg=el("chat-input").value.trim();if(!msg)return;el("chat-input").value="";addBubble(msg,"userbubble");el("send").disabled=true;try{let data=await api("/api/mini/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({agent:active,message:msg})});addBubble(data.reply,"agentbubble");await refresh();}catch(err){addBubble(err.message,"notice");}finally{el("send").disabled=false;}});
 el("refresh").addEventListener("click",refresh);
 if(initData){el("connection").textContent="MAX подключён";refresh();}else{el("connection").textContent="Предпросмотр";el("record-list").textContent="Для работы с данными откройте мини-приложение через MAX."; }
+
+async function refreshSocial(){const list=el("social-list");list.textContent="Загрузка…";try{const data=await api("/api/mini/social/channels");list.replaceChildren();for(const c of data.channels){const row=document.createElement("div");row.className="record";const name=document.createElement("b");name.textContent=c.label;const status=document.createElement("small");status.textContent=c.connected?"Подключён":"Не подключён · "+(c.manual_draft?"Черновик вручную":"Недоступен");const detail=document.createElement("div");detail.append(name,status);row.append(detail);list.append(row);}}catch(e){list.textContent=e.message;}}
+el("social-refresh").addEventListener("click",refreshSocial);
+refreshSocial();
