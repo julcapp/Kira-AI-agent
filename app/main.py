@@ -139,3 +139,10 @@ async def mini_chat(data: MiniChatIn, owner: str = Depends(web_owner)):
         db.commit()
         reply = await handle_message(db, owner, data.message)
         return {"reply": reply, "agent": data.agent}
+
+@app.get("/api/mini/social/channels")
+def social_channels(owner: str = Depends(web_owner)):
+    from .integrations.social_registry import CHANNELS
+    return {"channels": [{"key": c.value, "label": spec.label, "status": spec.status,
+                          "connected": False, "publish": False, "manual_draft": True}
+                         for c, spec in CHANNELS.items()]}
