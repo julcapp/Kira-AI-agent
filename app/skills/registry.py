@@ -23,6 +23,7 @@ SKILLS = {
         references=("references/templates.md", "references/tool-reference.md"),
         external_integrations=("firecrawl:planned", "dataforseo:planned"),
     )
+    , "first-customer": SkillSpec(slug="first-customer", version="1.0.0", agent_keys=("sales",), main="SKILL.md", references=("references/workflow.md",))
 }
 
 def _read_skill_asset(slug: str, relative_path: str) -> str:
