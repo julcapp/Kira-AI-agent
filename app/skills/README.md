@@ -5,6 +5,7 @@ A single, versioned library in the existing application. Skills extend registere
 | Skill | Version | Agent | Execution |
 | --- | --- | --- | --- |
 | competitor-profiling | 2.0.1 | competitors | Read-only prompt methodology |
+| first-customer | 1.0.0 | sales | Draft-only prompt methodology |
 
 Original source: https://platform.aibasis.ru/kak_sobrat_mini_razvedchika
 Files: competitor-profiling/SKILL.md, references/templates.md, references/tool-reference.md.
