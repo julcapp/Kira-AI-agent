@@ -1,0 +1,10 @@
+[Unit]
+Description=Hourly verified Kiryusha SQLite backup
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=kiryusha-backup.service
+
+[Install]
+WantedBy=timers.target
