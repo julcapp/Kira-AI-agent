@@ -37,3 +37,35 @@ def test_max_initdata_expired(monkeypatch):
     with pytest.raises(HTTPException) as err:
         validate_init_data(make_data(),now=int(time.time())+4000)
     assert err.value.status_code == 401
+
+@pytest.mark.parametrize("raw", [
+    "malformed",
+    "auth_date=1&broken",
+    "auth_date=%FF&hash=" + "0" * 64,
+    "hash=" + "%D0%B0" * 64,
+    "hash=" + "g" * 64,
+    "hash=" + "0" * 63,
+    "auth_date=1&auth_date=2&hash=" + "0" * 64,
+    "",
+    "x=" + "a" * 16384,
+])
+def test_max_initdata_malformed_rejected(monkeypatch, raw):
+    monkeypatch.setattr(settings,"max_bot_token","test-token")
+    monkeypatch.setattr(settings,"max_allowed_user_ids","42")
+    with pytest.raises(HTTPException) as err:
+        validate_init_data(raw)
+    assert err.value.status_code == 401
+
+def test_max_initdata_future_rejected(monkeypatch):
+    monkeypatch.setattr(settings,"max_bot_token","test-token")
+    monkeypatch.setattr(settings,"max_allowed_user_ids","42")
+    with pytest.raises(HTTPException) as err:
+        validate_init_data(make_data(), now=int(time.time())-120)
+    assert err.value.status_code == 401
+
+def test_max_initdata_nonfinite_id_rejected(monkeypatch):
+    monkeypatch.setattr(settings,"max_bot_token","test-token")
+    monkeypatch.setattr(settings,"max_allowed_user_ids","42")
+    with pytest.raises(HTTPException) as err:
+        validate_init_data(make_data(user_id=float("inf")))
+    assert err.value.status_code == 401
