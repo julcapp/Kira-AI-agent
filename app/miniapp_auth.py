@@ -10,14 +10,17 @@ from .config import settings
 def validate_init_data(raw: str, *, now: int | None = None) -> str:
     if not raw or len(raw) > 16384 or not settings.max_bot_token:
         raise HTTPException(status_code=401, detail="MAX authorization required")
-    pairs = parse_qsl(raw, keep_blank_values=True, strict_parsing=True)
+    try:
+        pairs = parse_qsl(raw, keep_blank_values=True, strict_parsing=True, errors="strict")
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Malformed MAX launch data") from None
     fields = {}
     for key, val in pairs:
         if key in fields:
             raise HTTPException(status_code=401, detail="Duplicate MAX field")
         fields[key] = val
     given = fields.pop("hash", None)
-    if not given or len(given) != 64:
+    if not given or len(given) != 64 or any(c not in "0123456789abcdef" for c in given):
         raise HTTPException(status_code=401, detail="Missing MAX signature")
     signed = "\n".join(f"{key}={val}" for key, val in sorted(fields.items()))
     secret = hmac.new(b"WebAppData", settings.max_bot_token.encode(), hashlib.sha256).digest()
@@ -28,7 +31,7 @@ def validate_init_data(raw: str, *, now: int | None = None) -> str:
         auth_date = int(fields["auth_date"])
         user = json.loads(fields["user"])
         user_id = int(user["id"])
-    except (ValueError, TypeError, KeyError, json.JSONDecodeError):
+    except (ValueError, TypeError, KeyError, OverflowError):
         raise HTTPException(status_code=401, detail="Incomplete MAX identity")
     current = int(now if now is not None else time.time())
     if auth_date > current + 60 or current - auth_date > 3600:
